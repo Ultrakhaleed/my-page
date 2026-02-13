@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>💌 A Small Question</title>
+  <meta name="theme-color" content="#ff4d8d"/>
+  <style>
+    :root{
+      --bg1:#090814;
+      --bg2:#120a2a;
+      --pink:#ff4d8d;
+      --rose:#ff7aa8;
+      --gold:#ffd37a;
+      --card:#ffffff10;
+      --stroke:#ffffff22;
+      --text:#f7f3ff;
+      --muted:#d7cfff;
+      --shadow: 0 20px 60px rgba(0,0,0,.45);
+      --radius: 24px;
+    }
+    *{ box-sizing:border-box; }
+    html,body{ height:100%; margin:0; font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial; color:var(--text); }
+    body{
+      overflow:hidden;
+      background: radial-gradient(1200px 800px at 20% 10%, #2a145a 0%, transparent 55%),
+                  radial-gradient(900px 700px at 80% 30%, #3a0f2c 0%, transparent 58%),
+                  linear-gradient(180deg, var(--bg1), var(--bg2));
+    }
+
+    /* Subtle moving aurora */
+    .aurora{
+      position:fixed; inset:-20%;
+      background:
+        radial-gradient(closest-side at 20% 40%, rgba(255,77,141,.22), transparent 60%),
+        radial-gradient(closest-side at 70% 30%, rgba(255,211,122,.18), transparent 60%),
+        radial-gradient(closest-side at 40% 80%, rgba(161,119,255,.18), transparent 60%);
+      filter: blur(30px) saturate(1.2);
+      animation: drift 14s ease-in-out infinite alternate;
+      pointer-events:none;
+    }
+    @keyframes drift{
+      from{ transform: translate3d(-3%, -2%, 0) scale(1.02) rotate(-1deg); }
+      to{   transform: translate3d( 3%,  2%, 0) scale(1.06) rotate( 1deg); }
+    }
+
+    /* Stars */
+    canvas#stars{ position:fixed; inset:0; width:100%; height:100%; opacity:.8; }
+
+    /* Floating hearts */
+    .heart{
+      position:fixed;
+      width:16px; height:16px;
+      transform: translate(-50%,-50%) rotate(45deg);
+      background: linear-gradient(135deg, rgba(255,77,141,.95), rgba(255,122,168,.9));
+      box-shadow: 0 10px 25px rgba(255,77,141,.18);
+      border-radius: 4px;
+      pointer-events:none;
+      opacity:0;
+      animation: floatUp linear forwards;
+    }
+    .heart:before,.heart:after{
+      content:"";
+      position:absolute;
+      width:16px; height:16px;
+      background: inherit;
+      border-radius: 50%;
+    }
+    .heart:before{ left:-8px; top:0; }
+    .heart:after { top:-8px; left:0; }
+
+    @keyframes floatUp{
+      0%   { opacity:0; transform: translate(var(--x), var(--y)) rotate(45deg) scale(.9); }
+      10%  { opacity:1; }
+      100% { opacity:0; transform: translate(calc(var(--x) + var(--dx)), calc(var(--y) - var(--rise))) rotate(45deg) scale(1.1); }
+    }
+
+    /* Center layout */
+    .wrap{
+      position:relative;
+      height:100%;
+      display:grid;
+      place-items:center;
+      padding: 28px 18px;
+    }
+
+    .card{
+      width:min(720px, 96vw);
+      border: 1px solid var(--stroke);
+      background: linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.04));
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      overflow:hidden;
+      position:relative;
+    }
+
+    .card::before{
+      content:"";
+      position:absolute; inset:0;
+      background:
+        radial-gradient(1200px 500px at 20% 10%, rgba(255,77,141,.22), transparent 60%),
+        radial-gradient(800px 600px at 85% 20%, rgba(255,211,122,.16), transparent 55%),
+        radial-gradient(900px 700px at 50% 110%, rgba(161,119,255,.18), transparent 58%);
+      opacity:.9;
+      pointer-events:none;
+    }
+
+    .inner{
+      position:relative;
+      padding: 32px 28px 26px;
+      display:flex;
+      flex-direction:column;
+      gap: 18px;
+    }
+
+    .badge{
+      display:inline-flex;
+      align-items:center;
+      gap:10px;
+      width:fit-content;
+      padding: 10px 14px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,.18);
+      background: rgba(0,0,0,.18);
+      color: var(--muted);
+      letter-spacing:.2px;
+      font-size: 13px;
+    }
+    .spark{
+      width:10px; height:10px; border-radius:50%;
+      background: radial-gradient(circle at 30% 30%, #fff, var(--gold));
+      box-shadow: 0 0 20px rgba(255,211,122,.35);
+    }
+
+    h1{
+      margin:0;
+      font-size: clamp(26px, 3.5vw, 44px);
+      line-height: 1.08;
+      letter-spacing: -0.6px;
+    }
+    h1 .name{
+      background: linear-gradient(90deg, var(--rose), var(--gold));
+      -webkit-background-clip:text;
+      background-clip:text;
+      color:transparent;
+      font-weight: 800;
+    }
+
+    .note{
+      margin:0;
+      font-size: clamp(14px, 1.8vw, 18px);
+      line-height: 1.7;
+      color: rgba(247,243,255,.9);
+      max-width: 62ch;
+    }
+
+    .type{
+      display:inline;
+      border-right: 2px solid rgba(255,255,255,.55);
+      padding-right: 3px;
+      animation: caret 900ms steps(1) infinite;
+    }
+    @keyframes caret { 50% { border-right-color: transparent; } }
+
+    .divider{
+      height:1px;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,.25), transparent);
+      margin: 2px 0 0;
+    }
+
+    .actions{
+      display:flex;
+      flex-wrap:wrap;
+      gap: 12px;
+      margin-top: 4px;
+      align-items:center;
+    }
+
+    button{
+      border:0;
+      cursor:pointer;
+      border-radius: 16px;
+      padding: 12px 16px;
+      font-size: 15px;
+      font-weight: 650;
+      letter-spacing:.2px;
+      transition: transform .12s ease, box-shadow .12s ease, background .12s ease;
+      user-select:none;
+    }
+
+    .yes{
+      background: linear-gradient(135deg, var(--pink), var(--rose));
+      color: white;
+      box-shadow: 0 14px 30px rgba(255,77,141,.25);
+      min-width: 170px;
+    }
+    .yes:hover{ transform: translateY(-1px) scale(1.01); }
+    .yes:active{ transform: translateY(0) scale(.99); }
+
+    .no{
+      position:relative;
+      background: rgba(255,255,255,.08);
+      border: 1px solid rgba(255,255,255,.22);
+      color: rgba(247,243,255,.92);
+      min-width: 120px;
+    }
+    .no:hover{ transform: translateY(-1px); }
+
+    .footer{
+      display:flex;
+      justify-content:space-between;
+      gap:12px;
+      flex-wrap:wrap;
+      align-items:center;
+      margin-top: 8px;
+      color: rgba(215,207,255,.78);
+      font-size: 13px;
+    }
+
+    .tiny{
+      display:flex; align-items:center; gap:10px;
+    }
+    .pill{
+      border: 1px solid rgba(255,255,255,.16);
+      background: rgba(0,0,0,.18);
+      padding: 8px 12px;
+      border-radius: 999px;
+      width: fit-content;
+    }
+
+    /* Modal */
+    .modal{
+      position:fixed; inset:0;
+      display:none;
+      place-items:center;
+      background: rgba(0,0,0,.55);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      padding: 20px;
+      z-index: 50;
+    }
+    .modal.open{ display:grid; }
+    .modalCard{
+      width:min(560px, 96vw);
+      border-radius: 24px;
+      border: 1px solid rgba(255,255,255,.2);
+      background: linear-gradient(180deg, rgba(255,255,255,.10), rgba(255,255,255,.05));
+      box-shadow: var(--shadow);
+      padding: 24px 22px;
+      position:relative;
+      overflow:hidden;
+    }
+    .modalCard::before{
+      content:"";
+      position:absolute; inset:-20%;
+      background:
+        radial-gradient(closest-side at 30% 40%, rgba(255,77,141,.25), transparent 60%),
+        radial-gradient(closest-side at 70% 30%, rgba(255,211,122,.20), transparent 60%);
+      filter: blur(18px);
+      pointer-events:none;
+    }
+    .modalBody{ position:relative; display:flex; flex-direction:column; gap:12px; }
+    .modalTitle{
+      font-size: 22px;
+      margin:0;
+      letter-spacing:-0.3px;
+    }
+    .modalText{
+      margin:0;
+      line-height:1.7;
+      color: rgba(247,243,255,.9);
+    }
+    .row{
+      display:flex; gap:10px; flex-wrap:wrap; margin-top: 6px;
+    }
+    .close{
+      background: rgba(255,255,255,.08);
+      border: 1px solid rgba(255,255,255,.22);
+      color: rgba(247,243,255,.92);
+    }
+    .copy{
+      background: linear-gradient(135deg, rgba(255,211,122,.95), rgba(255,122,168,.9));
+      color: #2a0b1c;
+      font-weight: 800;
+    }
+
+    /* Mobile-friendly */
+    @media (max-width:420px){
+      .inner{ padding: 26px 18px 20px; }
+      .yes,.no{ flex:1; }
+    }
+  </style>
+</head>
+<body>
+  <div class="aurora"></div>
+  <canvas id="stars"></canvas>
+
+  <div class="wrap">
+    <div class="card" role="region" aria-label="Valentine card">
+      <div class="inner">
+        <div class="badge"><span class="spark"></span> Private message from <strong id="fromName">Someone</strong></div>
+
+        <h1>
+          Hey <span class="name" id="herName">you</span>…<br/>
+          I have one small question.
+        </h1>
+
+        <p class="note">
+          <span id="typed" class="type"></span>
+        </p>
+
+        <div class="divider"></div>
+
+        <div class="actions">
+          <button class="yes" id="yesBtn">Yes 💖</button>
+          <button class="no" id="noBtn">No 🙈</button>
+        </div>
+
+        <div class="footer">
+          <div class="tiny">
+            <span class="pill">💫 Made with courage</span>
+            <span class="pill" id="datePill">📅</span>
+          </div>
+          <div class="pill">Tip: tap the background ✨</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal" id="modal" aria-hidden="true">
+    <div class="modalCard" role="dialog" aria-modal="true" aria-label="Valentine response">
+      <div class="modalBody">
+        <h2 class="modalTitle" id="modalTitle">She said YES 💞</h2>
+        <p class="modalText" id="modalText">
+          Okay wow. My heart is doing backflips. <br/>
+          Screenshot this and send it back to me so I can smile for 24 hours straight.
+        </p>
+        <div class="row">
+          <button class="copy" id="copyBtn">Copy cute reply</button>
+          <button class="close" id="closeBtn">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ====== EDIT THESE ======
+    const fromName = "KHALEED";            // your name
+    const herName  = "BALQIS"; // her name / nickname
+
+    const messageLines = [
+      "In a world full of noise, you’re my calm.",
+      "So here it is—simple, honest, and a little brave:",
+      "Will you be my Valentine?"
+    ];
+    // =======================
+
+    // Set names + date
+    document.getElementById("fromName").textContent = fromName;
+    document.getElementById("herName").textContent  = herName;
+    const d = new Date();
+    document.getElementById("datePill").textContent =
+      "📅 " + d.toLocaleDateString(undefined, { year:"numeric", month:"long", day:"numeric" });
+
+    // Typed text
+    const typedEl = document.getElementById("typed");
+    const fullText = messageLines.join(" ");
+    let i = 0;
+    (function type(){
+      typedEl.textContent = fullText.slice(0, i);
+      i++;
+      if(i <= fullText.length) setTimeout(type, 24 + Math.random()*35);
+    })();
+
+    // Stars canvas
+    const canvas = document.getElementById("stars");
+    const ctx = canvas.getContext("2d");
+    let w, h, stars;
+    function resize(){
+      w = canvas.width  = window.innerWidth * devicePixelRatio;
+      h = canvas.height = window.innerHeight * devicePixelRatio;
+      stars = Array.from({length: Math.floor((window.innerWidth*window.innerHeight)/18000)}, () => ({
+        x: Math.random()*w,
+        y: Math.random()*h,
+        r: (Math.random()*1.2 + 0.4) * devicePixelRatio,
+        a: Math.random()*0.7 + 0.2,
+        tw: Math.random()*0.02 + 0.005
+      }));
+    }
+    window.addEventListener("resize", resize);
+    resize();
+
+    function drawStars(){
+      ctx.clearRect(0,0,w,h);
+      for(const s of stars){
+        s.a += (Math.random() - 0.5) * s.tw;
+        s.a = Math.max(0.12, Math.min(0.95, s.a));
+        ctx.beginPath();
+        ctx.arc(s.x, s.y, s.r, 0, Math.PI*2);
+        ctx.fillStyle = `rgba(255,255,255,${s.a})`;
+        ctx.fill();
+      }
+      requestAnimationFrame(drawStars);
+    }
+    drawStars();
+
+    // Floating hearts on click
+    function spawnHeart(x,y){
+      const heart = document.createElement("div");
+      heart.className = "heart";
+      const dx = (Math.random()*120 - 60) + "px";
+      const rise = (Math.random()*260 + 220) + "px";
+      heart.style.setProperty("--x", x + "px");
+      heart.style.setProperty("--y", y + "px");
+      heart.style.setProperty("--dx", dx);
+      heart.style.setProperty("--rise", rise);
+      heart.style.animationDuration = (Math.random()*1.6 + 1.8) + "s";
+      document.body.appendChild(heart);
+      requestAnimationFrame(()=> heart.style.opacity = 1);
+      setTimeout(()=> heart.remove(), 4000);
+    }
+
+    document.addEventListener("click", (e)=>{
+      // Don't spawn hearts when clicking buttons/modal
+      const t = e.target;
+      if(t.closest("button") || t.closest("#modalCard") || t.id === "modal") return;
+      for(let k=0;k<6;k++){
+        setTimeout(()=>spawnHeart(e.clientX + (Math.random()*18-9), e.clientY + (Math.random()*18-9)), k*60);
+      }
+    });
+
+    // Modal logic
+    const modal = document.getElementById("modal");
+    const yesBtn = document.getElementById("yesBtn");
+    const noBtn  = document.getElementById("noBtn");
+    const closeBtn = document.getElementById("closeBtn");
+    const copyBtn  = document.getElementById("copyBtn");
+
+    function openModal(){
+      modal.classList.add("open");
+      modal.setAttribute("aria-hidden","false");
+      // celebration burst
+      const cx = window.innerWidth/2, cy = window.innerHeight/2;
+      for(let k=0;k<18;k++){
+        setTimeout(()=>spawnHeart(cx + (Math.random()*140-70), cy + (Math.random()*80-40)), k*35);
+      }
+    }
+    function closeModal(){
+      modal.classList.remove("open");
+      modal.setAttribute("aria-hidden","true");
+    }
+
+    yesBtn.addEventListener("click", openModal);
+    closeBtn.addEventListener("click", closeModal);
+    modal.addEventListener("click", (e)=>{ if(e.target === modal) closeModal(); });
+
+    copyBtn.addEventListener("click", async ()=>{
+      const text = `YES 💖 I'd love to be your Valentine, ${fromName} 🙂`;
+      try{
+        await navigator.clipboard.writeText(text);
+        copyBtn.textContent = "Copied ✅";
+        setTimeout(()=>copyBtn.textContent="Copy cute reply", 1500);
+      }catch{
+        copyBtn.textContent = "Copy failed 😅";
+        setTimeout(()=>copyBtn.textContent="Copy cute reply", 1500);
+      }
+    });
+
+    // Playful "No" dodge
+    function dodge(){
+      const rect = noBtn.getBoundingClientRect();
+      const pad = 12;
+      const maxX = window.innerWidth - rect.width - pad;
+      const maxY = window.innerHeight - rect.height - pad;
+      const x = Math.min(maxX, Math.max(pad, Math.random()*maxX));
+      const y = Math.min(maxY, Math.max(pad, Math.random()*maxY));
+      noBtn.style.position = "fixed";
+      noBtn.style.left = x + "px";
+      noBtn.style.top  = y + "px";
+      // tiny heart to soften it
+      spawnHeart(x + rect.width/2, y + rect.height/2);
+    }
+    noBtn.addEventListener("mouseenter", dodge);
+    noBtn.addEventListener("click", dodge);
+
+    // Keyboard escape closes modal
+    window.addEventListener("keydown", (e)=>{
+      if(e.key === "Escape") closeModal();
+    });
+  </script>
+</body>
+</html>
