@@ -2,493 +2,620 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>💌 A Small Question</title>
-  <meta name="theme-color" content="#ff4d8d"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Prestige Drive Oman</title>
   <style>
-    :root{
-      --bg1:#090814;
-      --bg2:#120a2a;
-      --pink:#ff4d8d;
-      --rose:#ff7aa8;
-      --gold:#ffd37a;
-      --card:#ffffff10;
-      --stroke:#ffffff22;
-      --text:#f7f3ff;
-      --muted:#d7cfff;
-      --shadow: 0 20px 60px rgba(0,0,0,.45);
-      --radius: 24px;
-    }
-    *{ box-sizing:border-box; }
-    html,body{ height:100%; margin:0; font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial; color:var(--text); }
-    body{
-      overflow:hidden;
-      background: radial-gradient(1200px 800px at 20% 10%, #2a145a 0%, transparent 55%),
-                  radial-gradient(900px 700px at 80% 30%, #3a0f2c 0%, transparent 58%),
-                  linear-gradient(180deg, var(--bg1), var(--bg2));
+    :root {
+      --bg: #0f172a;
+      --card: #111827;
+      --muted: #94a3b8;
+      --text: #e5e7eb;
+      --accent: #d4af37;
+      --accent-dark: #b89021;
+      --line: rgba(255,255,255,0.08);
+      --success: #16a34a;
     }
 
-    /* Subtle moving aurora */
-    .aurora{
-      position:fixed; inset:-20%;
-      background:
-        radial-gradient(closest-side at 20% 40%, rgba(255,77,141,.22), transparent 60%),
-        radial-gradient(closest-side at 70% 30%, rgba(255,211,122,.18), transparent 60%),
-        radial-gradient(closest-side at 40% 80%, rgba(161,119,255,.18), transparent 60%);
-      filter: blur(30px) saturate(1.2);
-      animation: drift 14s ease-in-out infinite alternate;
-      pointer-events:none;
-    }
-    @keyframes drift{
-      from{ transform: translate3d(-3%, -2%, 0) scale(1.02) rotate(-1deg); }
-      to{   transform: translate3d( 3%,  2%, 0) scale(1.06) rotate( 1deg); }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background: linear-gradient(180deg, #020617 0%, #0f172a 100%);
+      color: var(--text);
     }
 
-    /* Stars */
-    canvas#stars{ position:fixed; inset:0; width:100%; height:100%; opacity:.8; }
+    a { color: inherit; text-decoration: none; }
 
-    /* Floating hearts */
-    .heart{
-      position:fixed;
-      width:16px; height:16px;
-      transform: translate(-50%,-50%) rotate(45deg);
-      background: linear-gradient(135deg, rgba(255,77,141,.95), rgba(255,122,168,.9));
-      box-shadow: 0 10px 25px rgba(255,77,141,.18);
-      border-radius: 4px;
-      pointer-events:none;
-      opacity:0;
-      animation: floatUp linear forwards;
-    }
-    .heart:before,.heart:after{
-      content:"";
-      position:absolute;
-      width:16px; height:16px;
-      background: inherit;
-      border-radius: 50%;
-    }
-    .heart:before{ left:-8px; top:0; }
-    .heart:after { top:-8px; left:0; }
-
-    @keyframes floatUp{
-      0%   { opacity:0; transform: translate(var(--x), var(--y)) rotate(45deg) scale(.9); }
-      10%  { opacity:1; }
-      100% { opacity:0; transform: translate(calc(var(--x) + var(--dx)), calc(var(--y) - var(--rise))) rotate(45deg) scale(1.1); }
+    .container {
+      width: min(1120px, 92%);
+      margin: 0 auto;
     }
 
-    /* Center layout */
-    .wrap{
-      position:relative;
-      height:100%;
-      display:grid;
-      place-items:center;
-      padding: 28px 18px;
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      backdrop-filter: blur(10px);
+      background: rgba(2, 6, 23, 0.82);
+      border-bottom: 1px solid var(--line);
     }
 
-    .card{
-      width:min(720px, 96vw);
-      border: 1px solid var(--stroke);
-      background: linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.04));
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-      backdrop-filter: blur(14px);
-      -webkit-backdrop-filter: blur(14px);
-      overflow:hidden;
-      position:relative;
+    .nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 0;
+      gap: 16px;
     }
 
-    .card::before{
-      content:"";
-      position:absolute; inset:0;
-      background:
-        radial-gradient(1200px 500px at 20% 10%, rgba(255,77,141,.22), transparent 60%),
-        radial-gradient(800px 600px at 85% 20%, rgba(255,211,122,.16), transparent 55%),
-        radial-gradient(900px 700px at 50% 110%, rgba(161,119,255,.18), transparent 58%);
-      opacity:.9;
-      pointer-events:none;
+    .brand {
+      font-size: 1.2rem;
+      font-weight: 700;
+      letter-spacing: 0.4px;
     }
 
-    .inner{
-      position:relative;
-      padding: 32px 28px 26px;
-      display:flex;
-      flex-direction:column;
+    .brand span { color: var(--accent); }
+
+    .nav-links {
+      display: flex;
+      gap: 18px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .nav-links a {
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+
+    .nav-links a:hover { color: var(--text); }
+
+    .btn {
+      border: none;
+      background: var(--accent);
+      color: #111;
+      padding: 12px 18px;
+      border-radius: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: 0.2s ease;
+    }
+
+    .btn:hover { background: var(--accent-dark); }
+
+    .btn.secondary {
+      background: transparent;
+      color: var(--text);
+      border: 1px solid var(--line);
+    }
+
+    .hero {
+      padding: 72px 0 40px;
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      gap: 24px;
+      align-items: center;
+    }
+
+    .hero h1 {
+      margin: 0 0 14px;
+      font-size: clamp(2rem, 5vw, 4rem);
+      line-height: 1.05;
+    }
+
+    .hero p {
+      color: var(--muted);
+      font-size: 1.05rem;
+      line-height: 1.7;
+      max-width: 700px;
+    }
+
+    .hero-card,
+    .card {
+      background: rgba(17, 24, 39, 0.8);
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      box-shadow: 0 16px 50px rgba(0,0,0,0.3);
+    }
+
+    .hero-card {
+      padding: 22px;
+    }
+
+    .hero-img {
+      width: 100%;
+      height: 320px;
+      object-fit: cover;
+      border-radius: 18px;
+      display: block;
+    }
+
+    .section {
+      padding: 36px 0 24px;
+    }
+
+    .section h2 {
+      font-size: 1.8rem;
+      margin: 0 0 10px;
+    }
+
+    .section .sub {
+      color: var(--muted);
+      margin: 0 0 20px;
+      line-height: 1.7;
+    }
+
+    .search-box {
+      margin-top: 22px;
+      padding: 18px;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 12px;
+    }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .field label {
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    .field input,
+    .field select,
+    .field textarea {
+      width: 100%;
+      padding: 12px 14px;
+      border-radius: 12px;
+      border: 1px solid var(--line);
+      background: #0b1220;
+      color: var(--text);
+      outline: none;
+    }
+
+    .field textarea {
+      min-height: 110px;
+      resize: vertical;
+    }
+
+    .search-actions {
+      display: flex;
+      align-items: end;
+      gap: 10px;
+    }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
       gap: 18px;
     }
 
-    .badge{
-      display:inline-flex;
-      align-items:center;
-      gap:10px;
-      width:fit-content;
-      padding: 10px 14px;
+    .car-card {
+      overflow: hidden;
+    }
+
+    .car-card img {
+      width: 100%;
+      height: 220px;
+      object-fit: cover;
+      display: block;
+    }
+
+    .car-body {
+      padding: 18px;
+    }
+
+    .tag {
+      display: inline-block;
+      padding: 6px 10px;
       border-radius: 999px;
-      border: 1px solid rgba(255,255,255,.18);
-      background: rgba(0,0,0,.18);
-      color: var(--muted);
-      letter-spacing:.2px;
-      font-size: 13px;
-    }
-    .spark{
-      width:10px; height:10px; border-radius:50%;
-      background: radial-gradient(circle at 30% 30%, #fff, var(--gold));
-      box-shadow: 0 0 20px rgba(255,211,122,.35);
+      font-size: 0.78rem;
+      background: rgba(212, 175, 55, 0.12);
+      color: var(--accent);
+      margin-bottom: 10px;
     }
 
-    h1{
-      margin:0;
-      font-size: clamp(26px, 3.5vw, 44px);
-      line-height: 1.08;
-      letter-spacing: -0.6px;
-    }
-    h1 .name{
-      background: linear-gradient(90deg, var(--rose), var(--gold));
-      -webkit-background-clip:text;
-      background-clip:text;
-      color:transparent;
-      font-weight: 800;
-    }
-
-    .note{
-      margin:0;
-      font-size: clamp(14px, 1.8vw, 18px);
-      line-height: 1.7;
-      color: rgba(247,243,255,.9);
-      max-width: 62ch;
-    }
-
-    .type{
-      display:inline;
-      border-right: 2px solid rgba(255,255,255,.55);
-      padding-right: 3px;
-      animation: caret 900ms steps(1) infinite;
-    }
-    @keyframes caret { 50% { border-right-color: transparent; } }
-
-    .divider{
-      height:1px;
-      background: linear-gradient(90deg, transparent, rgba(255,255,255,.25), transparent);
-      margin: 2px 0 0;
-    }
-
-    .actions{
-      display:flex;
-      flex-wrap:wrap;
+    .car-title {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
       gap: 12px;
-      margin-top: 4px;
-      align-items:center;
+      margin-bottom: 10px;
     }
 
-    button{
-      border:0;
-      cursor:pointer;
-      border-radius: 16px;
-      padding: 12px 16px;
-      font-size: 15px;
-      font-weight: 650;
-      letter-spacing:.2px;
-      transition: transform .12s ease, box-shadow .12s ease, background .12s ease;
-      user-select:none;
+    .car-title h3 {
+      margin: 0;
+      font-size: 1.15rem;
     }
 
-    .yes{
-      background: linear-gradient(135deg, var(--pink), var(--rose));
-      color: white;
-      box-shadow: 0 14px 30px rgba(255,77,141,.25);
-      min-width: 170px;
-    }
-    .yes:hover{ transform: translateY(-1px) scale(1.01); }
-    .yes:active{ transform: translateY(0) scale(.99); }
-
-    .no{
-      position:relative;
-      background: rgba(255,255,255,.08);
-      border: 1px solid rgba(255,255,255,.22);
-      color: rgba(247,243,255,.92);
-      min-width: 120px;
-    }
-    .no:hover{ transform: translateY(-1px); }
-
-    .footer{
-      display:flex;
-      justify-content:space-between;
-      gap:12px;
-      flex-wrap:wrap;
-      align-items:center;
-      margin-top: 8px;
-      color: rgba(215,207,255,.78);
-      font-size: 13px;
+    .price {
+      color: var(--accent);
+      font-weight: 700;
+      white-space: nowrap;
     }
 
-    .tiny{
-      display:flex; align-items:center; gap:10px;
-    }
-    .pill{
-      border: 1px solid rgba(255,255,255,.16);
-      background: rgba(0,0,0,.18);
-      padding: 8px 12px;
-      border-radius: 999px;
-      width: fit-content;
+    .features {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 14px 0 18px;
     }
 
-    /* Modal */
-    .modal{
-      position:fixed; inset:0;
-      display:none;
-      place-items:center;
-      background: rgba(0,0,0,.55);
-      backdrop-filter: blur(8px);
-      -webkit-backdrop-filter: blur(8px);
+    .feature {
+      padding: 7px 10px;
+      border-radius: 10px;
+      background: #0b1220;
+      border: 1px solid var(--line);
+      font-size: 0.84rem;
+      color: var(--muted);
+    }
+
+    .card-actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .info-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 18px;
+    }
+
+    .info-card {
       padding: 20px;
-      z-index: 50;
-    }
-    .modal.open{ display:grid; }
-    .modalCard{
-      width:min(560px, 96vw);
-      border-radius: 24px;
-      border: 1px solid rgba(255,255,255,.2);
-      background: linear-gradient(180deg, rgba(255,255,255,.10), rgba(255,255,255,.05));
-      box-shadow: var(--shadow);
-      padding: 24px 22px;
-      position:relative;
-      overflow:hidden;
-    }
-    .modalCard::before{
-      content:"";
-      position:absolute; inset:-20%;
-      background:
-        radial-gradient(closest-side at 30% 40%, rgba(255,77,141,.25), transparent 60%),
-        radial-gradient(closest-side at 70% 30%, rgba(255,211,122,.20), transparent 60%);
-      filter: blur(18px);
-      pointer-events:none;
-    }
-    .modalBody{ position:relative; display:flex; flex-direction:column; gap:12px; }
-    .modalTitle{
-      font-size: 22px;
-      margin:0;
-      letter-spacing:-0.3px;
-    }
-    .modalText{
-      margin:0;
-      line-height:1.7;
-      color: rgba(247,243,255,.9);
-    }
-    .row{
-      display:flex; gap:10px; flex-wrap:wrap; margin-top: 6px;
-    }
-    .close{
-      background: rgba(255,255,255,.08);
-      border: 1px solid rgba(255,255,255,.22);
-      color: rgba(247,243,255,.92);
-    }
-    .copy{
-      background: linear-gradient(135deg, rgba(255,211,122,.95), rgba(255,122,168,.9));
-      color: #2a0b1c;
-      font-weight: 800;
     }
 
-    /* Mobile-friendly */
-    @media (max-width:420px){
-      .inner{ padding: 26px 18px 20px; }
-      .yes,.no{ flex:1; }
+    .info-card h3 {
+      margin-top: 0;
+      margin-bottom: 10px;
+    }
+
+    .info-card p {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.7;
+    }
+
+    .two-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+
+    .booking-box,
+    .partner-box {
+      padding: 22px;
+    }
+
+    .message {
+      margin-top: 14px;
+      padding: 12px 14px;
+      border-radius: 12px;
+      display: none;
+      background: rgba(22, 163, 74, 0.12);
+      border: 1px solid rgba(22, 163, 74, 0.35);
+      color: #bbf7d0;
+    }
+
+    footer {
+      padding: 28px 0 40px;
+      color: var(--muted);
+      text-align: center;
+    }
+
+    @media (max-width: 980px) {
+      .hero-grid,
+      .two-col,
+      .grid-3,
+      .info-grid,
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .search-actions {
+        align-items: stretch;
+      }
     }
   </style>
 </head>
 <body>
-  <div class="aurora"></div>
-  <canvas id="stars"></canvas>
+  <header>
+    <div class="container nav">
+      <div class="brand">Prestige <span>Drive Oman</span></div>
+      <nav class="nav-links">
+        <a href="#home">Home</a>
+        <a href="#cars">Luxury Cars</a>
+        <a href="#how">How It Works</a>
+        <a href="#booking">Booking</a>
+        <a href="#partners">Partners</a>
+      </nav>
+    </div>
+  </header>
 
-  <div class="wrap">
-    <div class="card" role="region" aria-label="Valentine card">
-      <div class="inner">
-        <div class="badge"><span class="spark"></span> Private message from <strong id="fromName">Someone</strong></div>
+  <main>
+    <section class="hero" id="home">
+      <div class="container hero-grid">
+        <div>
+          <h1>Find and book <span style="color: var(--accent);">luxury cars</span> in Oman.</h1>
+          <p>
+            Prestige Drive Oman is a website platform that gathers premium car rental options in one place.
+            Customers can search, compare, and request luxury cars for tourism, business trips, weddings,
+            and special occasions.
+          </p>
 
-        <h1>
-          Hey <span class="name" id="herName">you</span>…<br/>
-          I have one small question.
-        </h1>
-
-        <p class="note">
-          <span id="typed" class="type"></span>
-        </p>
-
-        <div class="divider"></div>
-
-        <div class="actions">
-          <button class="yes" id="yesBtn">Yes 💖</button>
-          <button class="no" id="noBtn">No 🙈</button>
-        </div>
-
-        <div class="footer">
-          <div class="tiny">
-            <span class="pill">💫 Made with courage</span>
-            <span class="pill" id="datePill">📅</span>
+          <div class="card search-box">
+            <div class="form-grid">
+              <div class="field">
+                <label for="location">Location</label>
+                <select id="location">
+                  <option>Muscat</option>
+                  <option>Sohar</option>
+                  <option>Nizwa</option>
+                  <option>Salalah</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="pickup">Pickup Date</label>
+                <input id="pickup" type="date" />
+              </div>
+              <div class="field">
+                <label for="carType">Car Type</label>
+                <select id="carType">
+                  <option>Any</option>
+                  <option>Sedan</option>
+                  <option>SUV</option>
+                  <option>Sports</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="budget">Budget (OMR/day)</label>
+                <select id="budget">
+                  <option>Any</option>
+                  <option>Up to 80</option>
+                  <option>81 - 150</option>
+                  <option>151 - 300</option>
+                  <option>301+</option>
+                </select>
+              </div>
+              <div class="search-actions">
+                <button class="btn" id="searchBtn">Search Cars</button>
+              </div>
+            </div>
           </div>
-          <div class="pill">Tip: tap the background ✨</div>
         </div>
-      </div>
-    </div>
-  </div>
 
-  <div class="modal" id="modal" aria-hidden="true">
-    <div class="modalCard" role="dialog" aria-modal="true" aria-label="Valentine response">
-      <div class="modalBody">
-        <h2 class="modalTitle" id="modalTitle">She said YES 💞</h2>
-        <p class="modalText" id="modalText">
-          Okay wow. My heart is doing backflips. <br/>
-          Screenshot this and send it back to me so I can smile for 24 hours straight.
-        </p>
-        <div class="row">
-          <button class="copy" id="copyBtn">Copy cute reply</button>
-          <button class="close" id="closeBtn">Close</button>
+        <div class="hero-card">
+          <img
+            class="hero-img"
+            src="https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&w=1200&q=80"
+            alt="Luxury car"
+          />
         </div>
       </div>
+    </section>
+
+    <section class="section" id="cars">
+      <div class="container">
+        <h2>Luxury car options</h2>
+        <p class="sub">Browse available premium vehicles from trusted partners across Oman.</p>
+
+        <div class="grid-3" id="carList">
+          <article class="card car-card" data-location="Muscat" data-type="Sedan" data-budget="151 - 300">
+            <img src="https://images.unsplash.com/photo-1555215695-3004980ad54e?auto=format&fit=crop&w=1200&q=80" alt="Mercedes E-Class" />
+            <div class="car-body">
+              <div class="tag">Executive Sedan</div>
+              <div class="car-title">
+                <h3>Mercedes E-Class</h3>
+                <div class="price">OMR 180/day</div>
+              </div>
+              <div style="color: var(--muted);">Provider: Muscat Elite Rentals</div>
+              <div class="features">
+                <span class="feature">Muscat</span>
+                <span class="feature">Chauffeur Option</span>
+                <span class="feature">Hotel Delivery</span>
+              </div>
+              <div class="card-actions">
+                <button class="btn" onclick="bookCar('Mercedes E-Class')">Book Now</button>
+                <button class="btn secondary" onclick="showDetails('Mercedes E-Class', 'Executive sedan for business trips and VIP travel.')">View Details</button>
+              </div>
+            </div>
+          </article>
+
+          <article class="card car-card" data-location="Muscat" data-type="SUV" data-budget="301+">
+            <img src="https://images.unsplash.com/photo-1511919884226-fd3cad34687c?auto=format&fit=crop&w=1200&q=80" alt="Range Rover Sport" />
+            <div class="car-body">
+              <div class="tag">Luxury SUV</div>
+              <div class="car-title">
+                <h3>Range Rover Sport</h3>
+                <div class="price">OMR 320/day</div>
+              </div>
+              <div style="color: var(--muted);">Provider: Royal Wheels Oman</div>
+              <div class="features">
+                <span class="feature">Muscat</span>
+                <span class="feature">Airport Pickup</span>
+                <span class="feature">Wedding Package</span>
+              </div>
+              <div class="card-actions">
+                <button class="btn" onclick="bookCar('Range Rover Sport')">Book Now</button>
+                <button class="btn secondary" onclick="showDetails('Range Rover Sport', 'Luxury SUV suitable for tourism, events, and family travel.')">View Details</button>
+              </div>
+            </div>
+          </article>
+
+          <article class="card car-card" data-location="Sohar" data-type="Sedan" data-budget="81 - 150">
+            <img src="https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?auto=format&fit=crop&w=1200&q=80" alt="BMW 5 Series" />
+            <div class="car-body">
+              <div class="tag">Business Class</div>
+              <div class="car-title">
+                <h3>BMW 5 Series</h3>
+                <div class="price">OMR 140/day</div>
+              </div>
+              <div style="color: var(--muted);">Provider: Sohar Prestige Rentals</div>
+              <div class="features">
+                <span class="feature">Sohar</span>
+                <span class="feature">Self-Drive</span>
+                <span class="feature">Business Use</span>
+              </div>
+              <div class="card-actions">
+                <button class="btn" onclick="bookCar('BMW 5 Series')">Book Now</button>
+                <button class="btn secondary" onclick="showDetails('BMW 5 Series', 'Elegant sedan with comfort and strong brand appeal.')">View Details</button>
+              </div>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="how">
+      <div class="container">
+        <h2>How it works</h2>
+        <p class="sub">A simple process that connects customers with trusted luxury car providers.</p>
+        <div class="info-grid">
+          <div class="card info-card">
+            <h3>1. Search</h3>
+            <p>Users search by location, date, car type, and budget to find suitable luxury vehicles.</p>
+          </div>
+          <div class="card info-card">
+            <h3>2. Compare</h3>
+            <p>Customers review prices, features, provider details, and service options in one place.</p>
+          </div>
+          <div class="card info-card">
+            <h3>3. Request Booking</h3>
+            <p>The platform sends the booking request and coordinates with the provider for final confirmation.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="booking">
+      <div class="container two-col">
+        <div class="card booking-box">
+          <h2>Book your luxury car</h2>
+          <p class="sub">Submit a booking request and our team will coordinate with the provider.</p>
+          <form id="bookingForm">
+            <div class="field">
+              <label for="fullName">Full Name</label>
+              <input id="fullName" type="text" placeholder="Enter your full name" required />
+            </div>
+            <div class="field">
+              <label for="phone">Phone Number</label>
+              <input id="phone" type="tel" placeholder="+968 9xxxxxxx" required />
+            </div>
+            <div class="field">
+              <label for="selectedCar">Selected Car</label>
+              <input id="selectedCar" type="text" placeholder="Choose from above or type manually" />
+            </div>
+            <div class="field">
+              <label for="serviceType">Service Type</label>
+              <select id="serviceType">
+                <option>Self-Drive</option>
+                <option>Chauffeur Service</option>
+                <option>Airport Pickup</option>
+                <option>Hotel Delivery</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="notes">Special Request</label>
+              <textarea id="notes" placeholder="Pickup location, timing, wedding/event notes..."></textarea>
+            </div>
+            <button class="btn" type="submit">Submit Booking Request</button>
+            <div id="bookingMessage" class="message">Booking request sent successfully. Our team will contact you soon.</div>
+          </form>
+        </div>
+
+        <div class="card partner-box" id="partners">
+          <h2>Join as a partner</h2>
+          <p class="sub">Car providers can register and list luxury vehicles on the platform.</p>
+          <form id="partnerForm">
+            <div class="field">
+              <label for="companyName">Company / Provider Name</label>
+              <input id="companyName" type="text" placeholder="Enter company name" required />
+            </div>
+            <div class="field">
+              <label for="companyPhone">Contact Number</label>
+              <input id="companyPhone" type="tel" placeholder="+968 9xxxxxxx" required />
+            </div>
+            <div class="field">
+              <label for="providerLocation">Location</label>
+              <input id="providerLocation" type="text" placeholder="Muscat / Sohar / Salalah..." required />
+            </div>
+            <div class="field">
+              <label for="fleet">Available Cars</label>
+              <textarea id="fleet" placeholder="Example: Mercedes E-Class, BMW 7 Series, Range Rover Velar"></textarea>
+            </div>
+            <button class="btn" type="submit">Register as Partner</button>
+            <div id="partnerMessage" class="message">Partner application submitted successfully.</div>
+          </form>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container">
+      Prestige Drive Oman © 2026 — Luxury car booking platform prototype for academic use.
     </div>
-  </div>
+  </footer>
 
   <script>
-    // ====== EDIT THESE ======
-    const fromName = "KHALEED";            // your name
-    const herName  = "BALQIS"; // her name / nickname
+    const searchBtn = document.getElementById('searchBtn');
+    const locationSelect = document.getElementById('location');
+    const typeSelect = document.getElementById('carType');
+    const budgetSelect = document.getElementById('budget');
+    const carCards = Array.from(document.querySelectorAll('.car-card'));
 
-    const messageLines = [
-      "In a world full of noise, you’re my calm.",
-      "So here it is—simple, honest, and a little brave:",
-      "Will you be my Valentine?"
-    ];
-    // =======================
+    searchBtn.addEventListener('click', () => {
+      const location = locationSelect.value;
+      const type = typeSelect.value;
+      const budget = budgetSelect.value;
 
-    // Set names + date
-    document.getElementById("fromName").textContent = fromName;
-    document.getElementById("herName").textContent  = herName;
-    const d = new Date();
-    document.getElementById("datePill").textContent =
-      "📅 " + d.toLocaleDateString(undefined, { year:"numeric", month:"long", day:"numeric" });
+      carCards.forEach(card => {
+        const cardLocation = card.dataset.location;
+        const cardType = card.dataset.type;
+        const cardBudget = card.dataset.budget;
 
-    // Typed text
-    const typedEl = document.getElementById("typed");
-    const fullText = messageLines.join(" ");
-    let i = 0;
-    (function type(){
-      typedEl.textContent = fullText.slice(0, i);
-      i++;
-      if(i <= fullText.length) setTimeout(type, 24 + Math.random()*35);
-    })();
+        const locationMatch = location === cardLocation || location === 'Any';
+        const typeMatch = type === 'Any' || type === cardType;
+        const budgetMatch = budget === 'Any' || budget === cardBudget;
 
-    // Stars canvas
-    const canvas = document.getElementById("stars");
-    const ctx = canvas.getContext("2d");
-    let w, h, stars;
-    function resize(){
-      w = canvas.width  = window.innerWidth * devicePixelRatio;
-      h = canvas.height = window.innerHeight * devicePixelRatio;
-      stars = Array.from({length: Math.floor((window.innerWidth*window.innerHeight)/18000)}, () => ({
-        x: Math.random()*w,
-        y: Math.random()*h,
-        r: (Math.random()*1.2 + 0.4) * devicePixelRatio,
-        a: Math.random()*0.7 + 0.2,
-        tw: Math.random()*0.02 + 0.005
-      }));
-    }
-    window.addEventListener("resize", resize);
-    resize();
+        card.style.display = (locationMatch && typeMatch && budgetMatch) ? 'block' : 'none';
+      });
 
-    function drawStars(){
-      ctx.clearRect(0,0,w,h);
-      for(const s of stars){
-        s.a += (Math.random() - 0.5) * s.tw;
-        s.a = Math.max(0.12, Math.min(0.95, s.a));
-        ctx.beginPath();
-        ctx.arc(s.x, s.y, s.r, 0, Math.PI*2);
-        ctx.fillStyle = `rgba(255,255,255,${s.a})`;
-        ctx.fill();
-      }
-      requestAnimationFrame(drawStars);
-    }
-    drawStars();
-
-    // Floating hearts on click
-    function spawnHeart(x,y){
-      const heart = document.createElement("div");
-      heart.className = "heart";
-      const dx = (Math.random()*120 - 60) + "px";
-      const rise = (Math.random()*260 + 220) + "px";
-      heart.style.setProperty("--x", x + "px");
-      heart.style.setProperty("--y", y + "px");
-      heart.style.setProperty("--dx", dx);
-      heart.style.setProperty("--rise", rise);
-      heart.style.animationDuration = (Math.random()*1.6 + 1.8) + "s";
-      document.body.appendChild(heart);
-      requestAnimationFrame(()=> heart.style.opacity = 1);
-      setTimeout(()=> heart.remove(), 4000);
-    }
-
-    document.addEventListener("click", (e)=>{
-      // Don't spawn hearts when clicking buttons/modal
-      const t = e.target;
-      if(t.closest("button") || t.closest("#modalCard") || t.id === "modal") return;
-      for(let k=0;k<6;k++){
-        setTimeout(()=>spawnHeart(e.clientX + (Math.random()*18-9), e.clientY + (Math.random()*18-9)), k*60);
-      }
+      document.getElementById('cars').scrollIntoView({ behavior: 'smooth' });
     });
 
-    // Modal logic
-    const modal = document.getElementById("modal");
-    const yesBtn = document.getElementById("yesBtn");
-    const noBtn  = document.getElementById("noBtn");
-    const closeBtn = document.getElementById("closeBtn");
-    const copyBtn  = document.getElementById("copyBtn");
-
-    function openModal(){
-      modal.classList.add("open");
-      modal.setAttribute("aria-hidden","false");
-      // celebration burst
-      const cx = window.innerWidth/2, cy = window.innerHeight/2;
-      for(let k=0;k<18;k++){
-        setTimeout(()=>spawnHeart(cx + (Math.random()*140-70), cy + (Math.random()*80-40)), k*35);
-      }
-    }
-    function closeModal(){
-      modal.classList.remove("open");
-      modal.setAttribute("aria-hidden","true");
+    function bookCar(carName) {
+      document.getElementById('selectedCar').value = carName;
+      document.getElementById('booking').scrollIntoView({ behavior: 'smooth' });
     }
 
-    yesBtn.addEventListener("click", openModal);
-    closeBtn.addEventListener("click", closeModal);
-    modal.addEventListener("click", (e)=>{ if(e.target === modal) closeModal(); });
+    function showDetails(name, description) {
+      alert(name + '\n\n' + description + '\n\nThis is a prototype. You can replace this popup with a full details page later.');
+    }
 
-    copyBtn.addEventListener("click", async ()=>{
-      const text = `YES 💖 I'd love to be your Valentine, ${fromName} 🙂`;
-      try{
-        await navigator.clipboard.writeText(text);
-        copyBtn.textContent = "Copied ✅";
-        setTimeout(()=>copyBtn.textContent="Copy cute reply", 1500);
-      }catch{
-        copyBtn.textContent = "Copy failed 😅";
-        setTimeout(()=>copyBtn.textContent="Copy cute reply", 1500);
-      }
+    document.getElementById('bookingForm').addEventListener('submit', function (e) {
+      e.preventDefault();
+      document.getElementById('bookingMessage').style.display = 'block';
+      this.reset();
     });
 
-    // Playful "No" dodge
-    function dodge(){
-      const rect = noBtn.getBoundingClientRect();
-      const pad = 12;
-      const maxX = window.innerWidth - rect.width - pad;
-      const maxY = window.innerHeight - rect.height - pad;
-      const x = Math.min(maxX, Math.max(pad, Math.random()*maxX));
-      const y = Math.min(maxY, Math.max(pad, Math.random()*maxY));
-      noBtn.style.position = "fixed";
-      noBtn.style.left = x + "px";
-      noBtn.style.top  = y + "px";
-      // tiny heart to soften it
-      spawnHeart(x + rect.width/2, y + rect.height/2);
-    }
-    noBtn.addEventListener("mouseenter", dodge);
-    noBtn.addEventListener("click", dodge);
-
-    // Keyboard escape closes modal
-    window.addEventListener("keydown", (e)=>{
-      if(e.key === "Escape") closeModal();
+    document.getElementById('partnerForm').addEventListener('submit', function (e) {
+      e.preventDefault();
+      document.getElementById('partnerMessage').style.display = 'block';
+      this.reset();
     });
   </script>
 </body>
 </html>
+
